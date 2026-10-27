@@ -23,24 +23,33 @@ export default function App() {
 
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isHealthy, setIsHealthy] = useState(false);
+  const [healthStatus, setHealthStatus] = useState('waking');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Poll backend health status
+  // Poll backend health status with fast initial retries while cloud wakes up
   useEffect(() => {
     let isMounted = true;
+    let timerId;
+
     const verifyHealth = async () => {
       const res = await checkHealth();
-      if (isMounted) {
-        setIsHealthy(res.isHealthy);
+      if (!isMounted) return;
+
+      if (res.isHealthy) {
+        setHealthStatus('online');
+        timerId = setTimeout(verifyHealth, 25000); // Poll normally when online
+      } else {
+        // If not healthy yet, retry every 5s to catch cloud wake-up
+        setHealthStatus((prev) => (prev === 'online' ? 'offline' : 'waking'));
+        timerId = setTimeout(verifyHealth, 5000);
       }
     };
 
     verifyHealth();
-    const interval = setInterval(verifyHealth, 25000);
+
     return () => {
       isMounted = false;
-      clearInterval(interval);
+      if (timerId) clearTimeout(timerId);
     };
   }, []);
 
@@ -166,7 +175,7 @@ export default function App() {
 
       <main className="main-content">
         <Header
-          isHealthy={isHealthy}
+          healthStatus={healthStatus}
           onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
           onNewChat={handleNewChat}
         />

@@ -1,7 +1,14 @@
 import React from 'react';
 import { Menu, Plus, Bot, Sparkles, Activity } from 'lucide-react';
 
-export default function Header({ isHealthy, onToggleSidebar, onNewChat }) {
+export default function Header({ healthStatus, onToggleSidebar, onNewChat }) {
+  const isOnline = healthStatus === 'online';
+  const isWaking = healthStatus === 'waking';
+
+  const dotClass = isOnline ? '' : (isWaking ? 'waking' : 'offline');
+  const labelText = isOnline ? 'API Online' : (isWaking ? 'Server Waking Up (~30s)...' : 'API Offline');
+  const labelColor = isOnline ? '#a7f3d0' : (isWaking ? '#fde68a' : '#fca5a5');
+
   return (
     <header className="app-header">
       <div className="header-left">
@@ -36,10 +43,10 @@ export default function Header({ isHealthy, onToggleSidebar, onNewChat }) {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div className="status-indicator" title={isHealthy ? 'Backend API connected' : 'Backend API disconnected'}>
-          <span className={`status-dot ${isHealthy ? '' : 'offline'}`} />
-          <span style={{ color: isHealthy ? '#a7f3d0' : '#fca5a5' }}>
-            {isHealthy ? 'API Online' : 'API Offline'}
+        <div className="status-indicator" title={labelText}>
+          <span className={`status-dot ${dotClass}`} />
+          <span style={{ color: labelColor }}>
+            {labelText}
           </span>
         </div>
 
