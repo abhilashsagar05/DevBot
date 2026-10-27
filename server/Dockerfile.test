@@ -1,0 +1,17 @@
+# ==========================================
+# DevBot AI - Automated Test Runner
+# ==========================================
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm ci
+
+COPY src/ ./src/
+COPY tests/ ./tests/
+
+ENV NODE_ENV=test
+
+CMD ["npm", "test"]
