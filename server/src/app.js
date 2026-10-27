@@ -9,6 +9,9 @@ const chatRoutes = require('./routes/chat');
 
 const app = express();
 
+// Trust reverse proxy (Nginx) headers for accurate rate limiting and IP logging
+app.set('trust proxy', 1);
+
 // Security & Parsing Middleware
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));

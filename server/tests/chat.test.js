@@ -126,18 +126,19 @@ describe('Chat API Endpoint - POST /api/chat', () => {
     });
 
     it('should handle unconfigured API key gracefully', async () => {
-      // Force null client and empty API key simulation
       geminiService.__setMockClient(null);
-      const originalKey = process.env.GEMINI_API_KEY;
-      delete process.env.GEMINI_API_KEY;
+      const config = require('../src/config/env');
+      const originalKey = config.geminiApiKey;
+      config.geminiApiKey = '';
 
       const res = await request(app)
         .post('/api/chat')
         .send({ message: 'Hello' });
 
       // Restore key
-      if (originalKey) process.env.GEMINI_API_KEY = originalKey;
+      config.geminiApiKey = originalKey;
 
+      expect(res.statusCode).toBe(503);
       expect(res.body.success).toBe(false);
       expect(res.body.error).toContain('GEMINI_API_KEY');
     });
