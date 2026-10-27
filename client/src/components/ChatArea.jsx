@@ -102,3 +102,4 @@ export default function ChatArea({ messages, isLoading, onSelectPrompt }) {
     </div>
   );
 }
+

@@ -40,3 +40,4 @@ Thumbs.db
 # Jenkins & Docker temporary files
 .docker/
 docker-compose.override.yml
+

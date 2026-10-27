@@ -68,3 +68,4 @@ export default function Header({ isHealthy, onToggleSidebar, onNewChat }) {
     </header>
   );
 }
+

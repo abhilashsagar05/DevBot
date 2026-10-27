@@ -50,3 +50,4 @@ export async function sendChatMessage(message, history = []) {
     throw error;
   }
 }
+

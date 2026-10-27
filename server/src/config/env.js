@@ -26,3 +26,4 @@ function validateConfig() {
 validateConfig();
 
 module.exports = config;
+

@@ -239,3 +239,4 @@ The included `Jenkinsfile` defines an 11-stage Declarative Pipeline:
 For a minute-by-minute presentation plan, check:
 * **[DEMO_GUIDE.md](file:///d:/DevBot/DEMO_GUIDE.md):** 5-minute pitch script, commands, and anticipated judge questions.
 * **[DEVOPS_GUIDE.md](file:///d:/DevBot/DEVOPS_GUIDE.md):** Deep-dive explanation of all CI/CD concepts.
+

@@ -29,3 +29,4 @@ describe('Health API Endpoint - GET /api/health', () => {
     expect(res.body.error).toContain('Route not found');
   });
 });
+

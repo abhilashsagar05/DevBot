@@ -1,3 +1,4 @@
+
 # DevBot AI — DevOps Engineer's Guide
 
 This guide breaks down every stage of the DevBot AI automated DevOps pipeline in beginner-friendly terms for college demonstrations and technical interviews.
