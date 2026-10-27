@@ -216,15 +216,28 @@ pipeline {
         stage('10. Deploy to Cloud') {
             steps {
                 script {
-                    if (env.RENDER_DEPLOY_HOOK_URL != null && env.RENDER_DEPLOY_HOOK_URL != '') {
-                        echo "===> Stage 10: Triggering automated cloud deployment webhook..."
-                        if (isUnix()) {
-                            sh 'curl -X POST "$RENDER_DEPLOY_HOOK_URL"'
-                        } else {
-                            bat 'powershell -Command "Invoke-RestMethod -Uri $env:RENDER_DEPLOY_HOOK_URL -Method Post"'
+                    try {
+                        withCredentials([string(credentialsId: 'render-deploy-hook-url', variable: 'RENDER_DEPLOY_HOOK')]) {
+                            echo "===> Stage 10: Triggering automated cloud deployment webhook..."
+                            if (isUnix()) {
+                                sh 'curl -s -X POST "$RENDER_DEPLOY_HOOK"'
+                            } else {
+                                bat 'powershell -Command "Invoke-RestMethod -Uri $env:RENDER_DEPLOY_HOOK -Method Post"'
+                            }
+                            echo "Cloud deployment triggered successfully on Render!"
                         }
-                    } else {
-                        echo "===> Stage 10 Note: RENDER_DEPLOY_HOOK_URL not configured. Skipping cloud deployment trigger."
+                    } catch (Exception e) {
+                        if (env.RENDER_DEPLOY_HOOK_URL != null && env.RENDER_DEPLOY_HOOK_URL != '') {
+                            echo "===> Stage 10: Triggering automated cloud deployment via env..."
+                            if (isUnix()) {
+                                sh 'curl -s -X POST "$RENDER_DEPLOY_HOOK_URL"'
+                            } else {
+                                bat 'powershell -Command "Invoke-RestMethod -Uri $env:RENDER_DEPLOY_HOOK_URL -Method Post"'
+                            }
+                        } else {
+                            echo "===> Stage 10 Note: 'render-deploy-hook-url' credential not configured in Jenkins. Skipping cloud deployment trigger."
+                            echo "To enable: Add 'render-deploy-hook-url' as Secret Text in Jenkins -> Manage Jenkins -> Credentials."
+                        }
                     }
                 }
             }
